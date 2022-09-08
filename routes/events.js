@@ -8,7 +8,7 @@ const router = Router();
 
 const middlewares = [validarJWT, validarCampos]
 
-
+console.log("LLAMANDO A LAS RUTAS DE LOS EVENTOS");
 //* Get events
 router.get('/', [...middlewares], getEvents)
 
