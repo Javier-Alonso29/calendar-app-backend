@@ -1,6 +1,6 @@
 const { response } = require('express')
 const bcrypt = require('bcryptjs')
-const Usuario = require('../models/User')
+const User = require('../models/User')
 const { generateJWT } = require('../helpers/jwt')
 
 const createUser = async(req, res = response) => {
@@ -9,7 +9,7 @@ const createUser = async(req, res = response) => {
 
     try {
 
-        let usuario = await Usuario.findOne({ email })
+        let usuario = await User.findOne({ email })
 
         if(usuario){
             return res.status(400).json({
@@ -18,7 +18,7 @@ const createUser = async(req, res = response) => {
             })
         }
 
-        usuario = new Usuario(req.body);
+        usuario = new User(req.body);
 
         //* encriptar contraseña
         const salt = bcrypt.genSaltSync();
@@ -52,7 +52,7 @@ const loginUsuario = async(req, res = response) => {
     const { email, password } = req.body
 
     try {
-        const usuario = await Usuario.findOne({ email })
+        const usuario = await User.findOne({ email })
 
         if(!usuario){
             return res.status(400).json({
