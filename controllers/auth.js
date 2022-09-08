@@ -9,31 +9,31 @@ const createUser = async(req, res = response) => {
 
     try {
 
-        let usuario = await User.findOne({ email })
+        let user = await User.findOne({ email })
 
-        if(usuario){
+        if(user){
             return res.status(400).json({
                 ok: false,
                 msg: 'El usuario ya existe'
             })
         }
 
-        usuario = new User(req.body);
+        user = new User(req.body);
 
         //* encriptar contraseña
         const salt = bcrypt.genSaltSync();
-        usuario.password = bcrypt.hashSync(password, salt);
+        user.password = bcrypt.hashSync(password, salt);
 
-        await usuario.save();
+        await user.save();
 
         //* Generate JWT
-        const token = await generateJWT(usuario.id, usuario.name);
+        const token = await generateJWT(user.id, user.name);
 
         res.status(201).json({
             ok: true,
             msg: 'El usuario se registro exitosamente',
-            uid: usuario._id,
-            name: usuario.name,
+            uid: user._id,
+            name: user.name,
             token
         })
         
@@ -52,9 +52,9 @@ const loginUsuario = async(req, res = response) => {
     const { email, password } = req.body
 
     try {
-        const usuario = await User.findOne({ email })
+        const user = await User.findOne({ email })
 
-        if(!usuario){
+        if(!user){
             return res.status(400).json({
                 ok: false,
                 msg: 'Email incorrecto'
@@ -62,7 +62,7 @@ const loginUsuario = async(req, res = response) => {
         }
 
         //* Confirmar contraseñas
-        const validPassword = bcrypt.compareSync(password, usuario.password)
+        const validPassword = bcrypt.compareSync(password, user.password)
 
         if(!validPassword){
             return res.status(400).json({
@@ -72,13 +72,13 @@ const loginUsuario = async(req, res = response) => {
         }
 
         //* Gernar el JWT
-        const token = await generateJWT(usuario.id, usuario.name);
+        const token = await generateJWT(user.id, user.name);
 
         res.json({
             ok: true,
             msg: 'Login',
-            uid: usuario.id,
-            name: usuario.name,
+            uid: user.id,
+            name: user.name,
             token
         })
         
